@@ -85,14 +85,21 @@ class Student {
             }
             
         }
-        bool delete_Class(){
-
-        }
-        bool verify_TimeTable(){
-
-        }
-        bool register_Class(){
-
+        bool delete_Class(string cc){
+            bool flag = false;
+            for(auto i=class_taken.begin();i!= class_taken.end();i++){
+                if(i->getCourseCode() == cc){
+                    flag = true;
+                    i->updateEnrollment(-1);
+                    class_taken.erase(i);
+                }
+            }
+            if(flag == false){
+                cout << "No such class found in your timetable\n";
+                return false;
+            }
+            return true;
+            
         }
         friend ostream& operator<< (ostream &out, Student const& data) {
             out << data.name << "-->" << data.id;
@@ -103,6 +110,7 @@ class Student {
 int main(){
     deque<Lecture_Class> admin_classes;
     deque<Student> students;
+    deque<Student> registered_students;
     while(true){
         int choice;
         cout << "Input 1 for Admin, 0 for student, -1 to exit" << endl;
@@ -218,7 +226,7 @@ int main(){
                 cout << "No such entry found\n";
                 break;
             }
-            cout << "Input Choice\n0: Add Class\n1: Delete Class\n2: Display my Classes";
+            cout << "Input Choice\n0: Add Class\n1: Delete Class\n2: Display my Classes\n3: Register Classes\n";
             int x;
             cin >> x;
             switch(x){
@@ -250,11 +258,21 @@ int main(){
                     } 
                     break;
                 }
-                case 1:
+                case 1:{
+                    string cc;
+                    cout << "Enter Course Code\n";
+                    cin >> cc;
+                    current.delete_Class(cc);
                     break;
+                }
                 case 2:
                     current.displayMyClasses();
                     break;
+                case 3:{
+                    registered_students.push_back(current);
+                    cout << "Student registered\n";
+                    break;
+                }
                 default:
                     cout << "Invalid Choice\n";
                     break;
